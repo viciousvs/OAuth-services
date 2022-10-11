@@ -1,4 +1,4 @@
-package model
+package user
 
 type User struct {
 	UUID         string `json:"uuid,omitempty"`

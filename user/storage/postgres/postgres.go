@@ -11,15 +11,15 @@ import (
 
 var (
 	once   sync.Once
-	pgPool *postgresDB
+	pgPool *PostgresDB
 )
 
-type postgresDB struct {
+type PostgresDB struct {
 	*pgxpool.Pool
 }
 
 // NewPostgresDB can end with log.Fatal()
-func NewPostgresDB(cfg config.PostgresConfig) *postgresDB {
+func NewPostgresDB(cfg config.PostgresConfig) *PostgresDB {
 	connUrl := fmt.Sprintf("postgress://%s:%s@%s:%s/%s",
 		cfg.User,
 		cfg.Password,
@@ -39,7 +39,7 @@ func NewPostgresDB(cfg config.PostgresConfig) *postgresDB {
 }
 
 // getPostgresDB
-func getPostgresDB(connUrl string) (*postgresDB, error) {
+func getPostgresDB(connUrl string) (*PostgresDB, error) {
 	ctx := context.TODO()
 
 	pcfg, err := pgxpool.ParseConfig(connUrl)
@@ -53,5 +53,5 @@ func getPostgresDB(connUrl string) (*postgresDB, error) {
 		return nil, fmt.Errorf("cannot ping connection pool: %w", err)
 	}
 
-	return &postgresDB{pool}, nil
+	return &PostgresDB{pool}, nil
 }
