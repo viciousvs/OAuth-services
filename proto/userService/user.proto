@@ -1,0 +1,27 @@
+syntax = "proto3";
+package user;
+
+option go_package = "./";
+
+service UserService{
+  rpc Create(CreateRequest) returns (CreateResponse){}
+  rpc GetID(GetIDRequest) returns (GetIDResponse){}
+}
+
+message CreateRequest{
+  string uuid = 1;
+  string login = 2;
+  string password = 3;
+}
+message CreateResponse{
+  string uuid = 1;
+}
+
+
+message GetIDRequest{
+  string login = 1;
+  string password = 2;
+}
+message GetIDResponse{
+  string uuid = 1;
+}
