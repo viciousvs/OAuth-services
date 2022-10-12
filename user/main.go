@@ -24,14 +24,17 @@ func main() {
 	pgRepo := user.NewPostgresRepo(db)
 	defer db.Close()
 
-	sCfg := config.NewServerConfig()
+	sCfg := config.MakeServerConfig()
 	srv := grpc.NewServer(pgRepo)
-	if err := srv.Run(sCfg); err != nil {
-		log.Fatalf("cannot run GRPC server: %v", err)
-	}
+
+	go func() {
+		log.Printf("GRPC server has been started, addr:%s", sCfg.Addr)
+		if err := srv.Run(sCfg); err != nil {
+			log.Fatalf("cannot run GRPC server: %v", err)
+		}
+	}()
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
 	<-quit
-	srv.ShutDown()
 }

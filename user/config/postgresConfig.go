@@ -8,6 +8,7 @@ const (
 	pgDB   = "POSTGRES_DB"
 )
 
+//PostgresConfig
 type PostgresConfig struct {
 	User,
 	Password,
@@ -16,12 +17,13 @@ type PostgresConfig struct {
 	DatabaseName string
 }
 
+//MakePostgresConfig
 func MakePostgresConfig() PostgresConfig {
 	return PostgresConfig{
 		User:         getEnv(pgUser, "postgres"),
 		Password:     getEnv(pgPass, "postgres"),
 		Host:         getEnv(pgHost, "localhost"),
 		Port:         getEnv(pgPort, "5432"),
-		DatabaseName: getEnv(pgDB, "user"),
+		DatabaseName: getEnv(pgDB, "postgres"),
 	}
 }

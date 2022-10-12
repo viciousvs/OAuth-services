@@ -2,11 +2,13 @@ package config
 
 const srvAddr = "SERVER_ADDRESS"
 
+//ServerConfig
 type ServerConfig struct {
 	Addr string
 }
 
-func NewServerConfig() ServerConfig {
+//MakeServerConfig
+func MakeServerConfig() ServerConfig {
 	return ServerConfig{
 		Addr: getEnv(srvAddr, "localhost:50051"),
 	}

@@ -4,7 +4,7 @@
 // - protoc             v3.12.4
 // source: user.proto
 
-package userPb
+package __
 
 import (
 	context "context"
@@ -23,7 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserServiceClient interface {
 	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
-	GetID(ctx context.Context, in *GetIDRequest, opts ...grpc.CallOption) (*GetIDResponse, error)
+	GetUUID(ctx context.Context, in *GetUUIDRequest, opts ...grpc.CallOption) (*GetUUIDResponse, error)
 }
 
 type userServiceClient struct {
@@ -43,9 +43,9 @@ func (c *userServiceClient) Create(ctx context.Context, in *CreateRequest, opts 
 	return out, nil
 }
 
-func (c *userServiceClient) GetID(ctx context.Context, in *GetIDRequest, opts ...grpc.CallOption) (*GetIDResponse, error) {
-	out := new(GetIDResponse)
-	err := c.cc.Invoke(ctx, "/user.UserService/GetID", in, out, opts...)
+func (c *userServiceClient) GetUUID(ctx context.Context, in *GetUUIDRequest, opts ...grpc.CallOption) (*GetUUIDResponse, error) {
+	out := new(GetUUIDResponse)
+	err := c.cc.Invoke(ctx, "/user.UserService/GetUUID", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func (c *userServiceClient) GetID(ctx context.Context, in *GetIDRequest, opts ..
 // for forward compatibility
 type UserServiceServer interface {
 	Create(context.Context, *CreateRequest) (*CreateResponse, error)
-	GetID(context.Context, *GetIDRequest) (*GetIDResponse, error)
+	GetUUID(context.Context, *GetUUIDRequest) (*GetUUIDResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -68,8 +68,8 @@ type UnimplementedUserServiceServer struct {
 func (UnimplementedUserServiceServer) Create(context.Context, *CreateRequest) (*CreateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
-func (UnimplementedUserServiceServer) GetID(context.Context, *GetIDRequest) (*GetIDResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetID not implemented")
+func (UnimplementedUserServiceServer) GetUUID(context.Context, *GetUUIDRequest) (*GetUUIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUUID not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -102,20 +102,20 @@ func _UserService_Create_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserService_GetID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetIDRequest)
+func _UserService_GetUUID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUUIDRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServiceServer).GetID(ctx, in)
+		return srv.(UserServiceServer).GetUUID(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.UserService/GetID",
+		FullMethod: "/user.UserService/GetUUID",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).GetID(ctx, req.(*GetIDRequest))
+		return srv.(UserServiceServer).GetUUID(ctx, req.(*GetUUIDRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -132,8 +132,8 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UserService_Create_Handler,
 		},
 		{
-			MethodName: "GetID",
-			Handler:    _UserService_GetID_Handler,
+			MethodName: "GetUUID",
+			Handler:    _UserService_GetUUID_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

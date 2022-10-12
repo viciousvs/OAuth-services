@@ -14,19 +14,19 @@ var (
 	pgPool *PostgresDB
 )
 
+//PostgresDB
 type PostgresDB struct {
 	*pgxpool.Pool
 }
 
 // NewPostgresDB can end with log.Fatal()
 func NewPostgresDB(cfg config.PostgresConfig) *PostgresDB {
-	connUrl := fmt.Sprintf("postgress://%s:%s@%s:%s/%s",
+	connUrl := fmt.Sprintf("postgres://%s:%s@%s:%s/%s",
 		cfg.User,
 		cfg.Password,
 		cfg.Host,
 		cfg.Port,
 		cfg.DatabaseName)
-
 	once.Do(func() {
 		var err error
 

@@ -2,7 +2,7 @@ package grpc
 
 import (
 	"fmt"
-	"github.com/viciousvs/OAuth-services/proto/userService"
+	userPb "github.com/viciousvs/OAuth-services/proto/userService"
 	"github.com/viciousvs/OAuth-services/user/config"
 	"github.com/viciousvs/OAuth-services/user/model/user"
 	"google.golang.org/grpc"
@@ -10,15 +10,18 @@ import (
 	"net"
 )
 
+//Server
 type Server struct {
 	repo user.Repository
 	userPb.UnimplementedUserServiceServer
 }
 
+//NewServer
 func NewServer(repo user.Repository) *Server {
 	return &Server{repo: repo}
 }
 
+//Run
 func (s *Server) Run(cfg config.ServerConfig) error {
 	listener, err := net.Listen("tcp", cfg.Addr)
 	if err != nil {
@@ -27,7 +30,7 @@ func (s *Server) Run(cfg config.ServerConfig) error {
 	defer func() {
 		err := listener.Close()
 		if err != nil {
-			log.Printf("listener close with error: %v", err)
+			log.Printf("listener close with customErors: %v", err)
 		}
 	}()
 
@@ -38,9 +41,4 @@ func (s *Server) Run(cfg config.ServerConfig) error {
 	}
 
 	return nil
-}
-
-func (s *Server) ShutDown() {
-	log.Println("GRPC server shut down")
-	s.ShutDown()
 }

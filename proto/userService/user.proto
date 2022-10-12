@@ -5,11 +5,11 @@ option go_package = "./";
 
 service UserService{
   rpc Create(CreateRequest) returns (CreateResponse){}
-  rpc GetID(GetIDRequest) returns (GetIDResponse){}
+  rpc GetUUID(GetUUIDRequest) returns (GetUUIDResponse){}
+//  rpc GetUser(GetUserRequest) returns (GetUserResponse){}
 }
 
 message CreateRequest{
-  string uuid = 1;
   string login = 2;
   string password = 3;
 }
@@ -18,10 +18,21 @@ message CreateResponse{
 }
 
 
-message GetIDRequest{
+message GetUUIDRequest{
   string login = 1;
   string password = 2;
 }
-message GetIDResponse{
+message GetUUIDResponse{
   string uuid = 1;
 }
+
+
+//message GetUserRequest{
+//  string login = 1;
+//  string password = 2;
+//}
+//message GetUserResponse{
+//  string uuid = 1;
+//  string login = 2;
+//  //if we have another fields
+//}
