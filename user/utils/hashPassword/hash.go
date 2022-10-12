@@ -1,13 +1,22 @@
 package hashPassword
 
+import (
+	"github.com/viciousvs/OAuth-services/user/utils/customErors"
+	"golang.org/x/crypto/bcrypt"
+)
+
 //Hash
-func Hash(password string) string {
+func Hash(password string) (string, error) {
 	//TODO Implement Password Hashing
-	return password
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", customErors.ErrCouldntBeHashed
+	}
+	return string(hash), nil
 }
 
 //CompareHashes
-func CompareHashes(hash1, hash2 string) bool {
+func CompareHashAndPassword(hash, plain string) error {
 	//TODO implement comapre
-	return hash1 == hash2
+	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(plain))
 }

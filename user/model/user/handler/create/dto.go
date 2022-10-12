@@ -16,17 +16,20 @@ type createUserDTO struct {
 //Validate
 func (u createUserDTO) Validate() error {
 	return validation.ValidateStruct(&u,
-		validation.Field(&u.UUID, validation.Required, validation.Length(36, 36)),
 		validation.Field(&u.Login, validation.Required, validation.Length(3, 255)),
-		validation.Field(&u.PasswordHash, validation.Required, validation.Length(8, 50)),
+		validation.Field(&u.PasswordHash, validation.Required, validation.Length(8, 255)),
 	)
 }
 
 //makeCreateUserDTO
-func makeCreateUserDTO(login, password string) createUserDTO {
+func makeCreateUserDTO(login, password string) (createUserDTO, error) {
+	hash, err := hashPassword.Hash(password)
+	if err != nil {
+		return createUserDTO{}, err
+	}
 	return createUserDTO{
 		UUID:         uuid.GenerateUUID(),
 		Login:        login,
-		PasswordHash: hashPassword.Hash(password),
-	}
+		PasswordHash: hash,
+	}, nil
 }

@@ -6,7 +6,6 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/viciousvs/OAuth-services/user/storage/postgres"
 	"github.com/viciousvs/OAuth-services/user/utils/customErors"
-	"github.com/viciousvs/OAuth-services/user/utils/hashPassword"
 )
 
 type repoPostgres struct {
@@ -42,25 +41,20 @@ func (r repoPostgres) Create(ctx context.Context, user User) (string, error) {
 }
 
 //GetUUID
-func (r repoPostgres) GetUUID(ctx context.Context, login, passwordHash string) (string, error) {
-	stmt := `SELECT uuid, password_hash FROM users WHERE login=$1`
+func (r repoPostgres) GetUser(ctx context.Context, login string) (User, error) {
+	stmt := `SELECT uuid, login, password_hash FROM users WHERE login=$1`
 
-	var uuid, pHashFromDB string
+	var user User
 
-	err := r.db.QueryRow(ctx, stmt, login).Scan(&uuid, &pHashFromDB)
+	err := r.db.QueryRow(ctx, stmt, login).Scan(&user.UUID, &user.Login, &user.PasswordHash)
 	if err != nil {
 		if err == pgx.ErrNoRows {
-			return "", customErors.ErrNotFound
+			return user, customErors.ErrNotFound
 		}
-		return "", err
+		return user, err
 	}
 
-	//TODO compare hashes
-	if !hashPassword.CompareHashes(passwordHash, pHashFromDB) {
-		return "", customErors.ErrDifferentPasswordHashes
-	}
-
-	return uuid, nil
+	return user, nil
 }
 
 //func (r repoPostgres) GetUser(ctx context.Context, login, hashPassword string) (GettingUserDTO, error) {

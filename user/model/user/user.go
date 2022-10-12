@@ -15,10 +15,3 @@ func MakeUser(uuid, login, passwordHash string) User {
 		PasswordHash: passwordHash,
 	}
 }
-
-//GettingUserDTO
-type GettingUserDTO struct {
-	UUID  string
-	Login string
-	//if we have another fields
-}

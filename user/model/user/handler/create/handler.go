@@ -23,7 +23,14 @@ func (h handler) Handle(ctx context.Context, req *userPb.CreateRequest) (string,
 	if req == nil {
 		return "", customErors.ErrNilRequest
 	}
-	u := makeCreateUserDTO(req.GetLogin(), req.GetPassword())
+	if len(req.GetPassword()) < 8 || len(req.GetLogin()) < 3 {
+		return "", customErors.ErrInvalidData
+	}
+
+	u, err := makeCreateUserDTO(req.GetLogin(), req.GetPassword())
+	if err != nil {
+		return "", err
+	}
 	if err := u.Validate(); err != nil {
 		return "", customErors.ErrInvalidData
 	}
@@ -33,5 +40,6 @@ func (h handler) Handle(ctx context.Context, req *userPb.CreateRequest) (string,
 	if err != nil {
 		return "", err
 	}
+
 	return uuid, nil
 }
