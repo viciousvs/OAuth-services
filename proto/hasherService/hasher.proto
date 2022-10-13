@@ -1,0 +1,26 @@
+syntax = "proto3";
+package hasher;
+
+option go_package = "./";
+
+service HasherService{
+  rpc GenerateHash(Password) returns (Hash){}
+  rpc CompareHashAndPassword(CompareRequest) returns (CompareResponse) {}
+}
+//Request
+message Password{
+  string value = 1;
+}
+message CompareRequest{
+  string password_hash = 1;
+  string password = 2;
+}
+
+//Response
+message Hash{
+  string password_hash = 1;
+}
+message CompareResponse{
+  bool value = 1;
+}
+

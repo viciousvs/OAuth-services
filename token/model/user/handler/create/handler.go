@@ -5,8 +5,6 @@ import (
 	userPb "github.com/viciousvs/OAuth-services/proto/userService"
 	"github.com/viciousvs/OAuth-services/user/model/user"
 	"github.com/viciousvs/OAuth-services/user/utils/customErors"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 //handler
@@ -27,7 +25,7 @@ func (h handler) Handle(ctx context.Context, req *userPb.CreateRequest) (string,
 
 	u := newDTOwithUUID(req.Login, req.PasswordHash)
 	if err := u.validate(); err != nil {
-		return "", status.Error(codes.Code(400), err.Error())
+		return "", customErors.ErrInvalidData(err.Error())
 	}
 
 	uuid, err := h.repo.Create(ctx, user.NewUser(u.UUID, u.Login, u.PasswordHash))

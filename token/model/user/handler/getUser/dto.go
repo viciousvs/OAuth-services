@@ -1,7 +1,7 @@
 package getUUID
 
 //
-//import "github.com/viciousvs/OAuth-services/user/utils/hashPassword"
+//import "github.com/viciousvs/OAuth-services/hasher/utils/hashPassword"
 //
 //type getUserDTO struct {
 //

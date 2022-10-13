@@ -4,7 +4,5 @@ import "context"
 
 type Repository interface {
 	Create(ctx context.Context, user User) (string, error)
-	GetUser(ctx context.Context, login string) (User, error)
-	//TODO implement GetUser repo method
-	//GetUser(ctx context.Context, uuid string) (GettingUserDTO, customErors)
+	GetByLogin(ctx context.Context, login, passwordHash string) (User, error)
 }

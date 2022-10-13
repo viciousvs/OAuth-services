@@ -5,14 +5,14 @@ package getUUID
 //	"context"
 //	"fmt"
 //	userPb "github.com/viciousvs/OAuth-services/proto/userService"
-//	"github.com/viciousvs/OAuth-services/user/model/user"
+//	"github.com/viciousvs/OAuth-services/hasher/model/hasher"
 //)
 //
 //type handler struct {
-//	repo user.Repository
+//	repo hasher.Repository
 //}
 //
-//func NewHandler(repo user.Repository) *handler {
+//func NewHandler(repo hasher.Repository) *handler {
 //	return &handler{repo: repo}
 //}
 //

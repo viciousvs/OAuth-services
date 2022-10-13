@@ -4,35 +4,32 @@ package user;
 option go_package = "./";
 
 service UserService{
-  rpc Create(CreateRequest) returns (CreateResponse){}
-  rpc GetUUID(GetUUIDRequest) returns (GetUUIDResponse){}
+  rpc Create(CreateRequest) returns (UUID){}
+//  rpc GetUUID(GetUUIDRequest) returns (User){}
+  rpc GetByLogin(GetByLoginRequest) returns (User){}
+//  rpc Find(FindRequest) returns (Users){}
+//  rpc CheckUser(CheckUserRequest) returns (User){}
 //  rpc GetUser(GetUserRequest) returns (GetUserResponse){}
 }
 
-message CreateRequest{
-  string login = 2;
-  string password = 3;
-}
-message CreateResponse{
-  string uuid = 1;
-}
-
-
-message GetUUIDRequest{
+//requests
+message CreateRequest {
   string login = 1;
-  string password = 2;
+  string password_hash = 2;
+  //
 }
-message GetUUIDResponse{
+message GetByLoginRequest{
+  string login = 1;
+  string password_hash = 2;
+}
+
+
+//responses
+message UUID{
+  string value = 1;
+}
+message User{
   string uuid = 1;
+  string login = 2;
+  string password_hash = 3;
 }
-
-
-//message GetUserRequest{
-//  string login = 1;
-//  string password = 2;
-//}
-//message GetUserResponse{
-//  string uuid = 1;
-//  string login = 2;
-//  //if we have another fields
-//}

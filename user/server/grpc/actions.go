@@ -2,37 +2,30 @@ package grpc
 
 import (
 	"context"
-	"github.com/viciousvs/OAuth-services/user/model/user/handler/create"
-	"github.com/viciousvs/OAuth-services/user/model/user/handler/getUUID"
-
 	userPb "github.com/viciousvs/OAuth-services/proto/userService"
+	"github.com/viciousvs/OAuth-services/user/model/user/handler/create"
+	"github.com/viciousvs/OAuth-services/user/model/user/handler/getByLogin"
 )
 
-//Create
-func (s *Server) Create(ctx context.Context, request *userPb.CreateRequest) (*userPb.CreateResponse, error) {
-	//TODO create Errors
+func (s *Server) Create(ctx context.Context, request *userPb.CreateRequest) (*userPb.UUID, error) {
 	h := create.NewHandler(s.repo)
 	uuid, err := h.Handle(ctx, request)
 	if err != nil {
 		return nil, err
 	}
-	return &userPb.CreateResponse{Uuid: uuid}, err
+	return &userPb.UUID{Value: uuid}, nil
 }
 
-//GetUUID
-func (s *Server) GetUUID(ctx context.Context, request *userPb.GetUUIDRequest) (*userPb.GetUUIDResponse, error) {
-	//TODO implement me
-	h := getUUID.NewHandler(s.repo)
-	uuid, err := h.Handle(ctx, request)
+func (s *Server) GetByLogin(ctx context.Context, request *userPb.GetByLoginRequest) (*userPb.User, error) {
+	h := getByLogin.NewHandler(s.repo)
+	u, err := h.Handle(ctx, request)
 	if err != nil {
 		return nil, err
-
 	}
-	return &userPb.GetUUIDResponse{Uuid: uuid}, nil
+	return &userPb.User{Uuid: u.UUID, Login: u.Login, PasswordHash: u.PasswordHash}, nil
 }
 
-//mustEmbedUnimplementedUserServiceServer
 func (s *Server) mustEmbedUnimplementedUserServiceServer() {
 	//TODO implement me
-	panic("implement me")
+	panic("IMPLEMENT ME")
 }

@@ -40,13 +40,13 @@ func (r repoPostgres) Create(ctx context.Context, user User) (string, error) {
 	return user.UUID, nil
 }
 
-//GetUUID
-func (r repoPostgres) GetUser(ctx context.Context, login string) (User, error) {
-	stmt := `SELECT uuid, login, password_hash FROM users WHERE login=$1`
+//GetByLogin
+func (r repoPostgres) GetByLogin(ctx context.Context, login, passwordHash string) (User, error) {
+	stmt := `SELECT uuid, login, password_hash FROM users WHERE (login=$1 AND password_hash=$2)`
 
 	var user User
 
-	err := r.db.QueryRow(ctx, stmt, login).Scan(&user.UUID, &user.Login, &user.PasswordHash)
+	err := r.db.QueryRow(ctx, stmt, login, passwordHash).Scan(&user.UUID, &user.Login, &user.PasswordHash)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return user, customErors.ErrNotFound
@@ -56,8 +56,3 @@ func (r repoPostgres) GetUser(ctx context.Context, login string) (User, error) {
 
 	return user, nil
 }
-
-//func (r repoPostgres) GetUser(ctx context.Context, login, hashPassword string) (GettingUserDTO, error) {
-//	//TODO implement me
-//	panic("implement me")
-//}
