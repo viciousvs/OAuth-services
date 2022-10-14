@@ -2,14 +2,13 @@ package grpc
 
 import (
 	"context"
-	"github.com/viciousvs/OAuth-services/hasher/model/hasher/handler/compare"
-	"github.com/viciousvs/OAuth-services/hasher/model/hasher/handler/generate"
+	"github.com/viciousvs/OAuth-services/hasher/handler/compare"
+	"github.com/viciousvs/OAuth-services/hasher/handler/generate"
 	hasherPb "github.com/viciousvs/OAuth-services/proto/hasherService"
 )
 
 func (s *Server) GenerateHash(ctx context.Context, req *hasherPb.Password) (*hasherPb.Hash, error) {
-	h := generate.NewHandler(s.repo)
-	hash, err := h.Handle(req)
+	hash, err := generate.Handle(req)
 	if err != nil {
 		return nil, err
 	}
@@ -17,8 +16,10 @@ func (s *Server) GenerateHash(ctx context.Context, req *hasherPb.Password) (*has
 }
 
 func (s *Server) CompareHashAndPassword(ctx context.Context, request *hasherPb.CompareRequest) (*hasherPb.CompareResponse, error) {
-	h := compare.NewHandler(s.repo)
-
+	if err := compare.Handle(request); err != nil {
+		return &hasherPb.CompareResponse{Value: false}, err
+	}
+	return &hasherPb.CompareResponse{Value: true}, nil
 }
 
 func (s *Server) mustEmbedUnimplementedHasherServiceServer() {

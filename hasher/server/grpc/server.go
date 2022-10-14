@@ -3,7 +3,6 @@ package grpc
 import (
 	"fmt"
 	"github.com/viciousvs/OAuth-services/hasher/config"
-	"github.com/viciousvs/OAuth-services/hasher/model/hasher"
 	hasherPb "github.com/viciousvs/OAuth-services/proto/hasherService"
 	"google.golang.org/grpc"
 	"log"
@@ -12,13 +11,12 @@ import (
 
 //Server
 type Server struct {
-	repo hasher.Repository
 	hasherPb.UnimplementedHasherServiceServer
 }
 
 //NewServer
-func NewServer(repo hasher.Repository) *Server {
-	return &Server{repo: repo}
+func NewServer() *Server {
+	return &Server{}
 }
 
 //Run

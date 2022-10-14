@@ -1,0 +1,47 @@
+syntax = "proto3";
+package token;
+option go_package = "./";
+
+service TokenService{
+  rpc GenerateTokens(GenerateTokensRequest) returns (GenerateTokensResponse) {}
+  rpc VerifyAccess(VerifyAccessRequest) returns (VerifyAccessResponse) {}
+  rpc Refresh(RefreshRequest) returns (RefreshResponse){}
+//  rpc DeleteTokens(DeleteTokensRequest) returns (DeleteTokensResponse) {}
+}
+//base
+message Tokens{
+  string at_uuid = 1;
+  string access_token = 2;
+  int64 at_expires = 3;
+
+  string rt_uuid = 4;
+  string refresh_token = 5;
+  int64 rt_expires = 6;
+}
+//Request
+message GenerateTokensRequest{
+  string uuid = 1;
+}
+message VerifyAccessRequest{
+  string access_token = 1;
+}
+message RefreshRequest{
+  string refresh_token = 1;
+}
+//message DeleteTokensRequest{
+//}
+
+//Response
+message GenerateTokensResponse{
+  Tokens tokens = 1;
+}
+message VerifyAccessResponse{
+  map<string, string> header = 1;
+  map<string, string> claims = 2;
+  string signature = 3;
+}
+message RefreshResponse{
+  Tokens tokens = 1;
+}
+//message DeleteTokensResponse{
+//}

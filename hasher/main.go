@@ -3,9 +3,7 @@ package main
 import (
 	"github.com/joho/godotenv"
 	"github.com/viciousvs/OAuth-services/hasher/config"
-	"github.com/viciousvs/OAuth-services/hasher/model/hasher"
 	"github.com/viciousvs/OAuth-services/hasher/server/grpc"
-	"golang.org/x/crypto/bcrypt"
 	"log"
 	"os"
 	"os/signal"
@@ -19,9 +17,8 @@ func init() {
 	}
 }
 func main() {
-	repo := hasher.NewBcryptHasher(bcrypt.DefaultCost)
 	sCfg := config.MakeServerConfig()
-	srv := grpc.NewServer(repo)
+	srv := grpc.NewServer()
 
 	go func() {
 		log.Printf("GRPC server has been started, addr:%s", sCfg.Addr)

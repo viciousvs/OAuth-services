@@ -1,13 +1,15 @@
-package hasher
+package handler
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"golang.org/x/crypto/bcrypt"
+)
 
 type bcryptHasher struct {
 	cost int
 }
 
-func NewBcryptHasher(cost int) Repository {
-	return &bcryptHasher{cost: cost}
+func NewBcryptHasher(cost int) bcryptHasher {
+	return bcryptHasher{cost: cost}
 }
 func (b bcryptHasher) GenerateHash(password string) (string, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), b.cost)

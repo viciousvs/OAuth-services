@@ -3,8 +3,8 @@ package grpc
 import (
 	"context"
 	userPb "github.com/viciousvs/OAuth-services/proto/userService"
-	"github.com/viciousvs/OAuth-services/user/model/user/handler/create"
-	"github.com/viciousvs/OAuth-services/user/model/user/handler/getByLogin"
+	"github.com/viciousvs/OAuth-services/user/handler/create"
+	"github.com/viciousvs/OAuth-services/user/handler/getByLogin"
 )
 
 func (s *Server) Create(ctx context.Context, request *userPb.CreateRequest) (*userPb.UUID, error) {

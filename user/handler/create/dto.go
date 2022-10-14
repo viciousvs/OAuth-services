@@ -6,9 +6,9 @@ import (
 )
 
 type _DTO struct {
-	UUID         string
-	Login        string
-	PasswordHash string
+	UUID         string `json:"uuid"`
+	Login        string `json:"login"`
+	PasswordHash string `json:"password_hash"`
 }
 
 func newDTOwithUUID(login, passwordHash string) _DTO {

@@ -10,6 +10,6 @@ type ServerConfig struct {
 //MakeServerConfig
 func MakeServerConfig() ServerConfig {
 	return ServerConfig{
-		Addr: getEnv(srvAddr, "localhost:50051"),
+		Addr: getEnv(srvAddr, "localhost:50053"),
 	}
 }
