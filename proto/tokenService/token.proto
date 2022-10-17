@@ -3,9 +3,9 @@ package token;
 option go_package = "./";
 
 service TokenService{
-  rpc GenerateTokens(GenerateTokensRequest) returns (GenerateTokensResponse) {}
+  rpc GenerateTokens(GenerateTokensRequest) returns (Tokens) {}
   rpc VerifyAccess(VerifyAccessRequest) returns (VerifyAccessResponse) {}
-  rpc Refresh(RefreshRequest) returns (RefreshResponse){}
+  rpc Refresh(RefreshRequest) returns (Tokens){}
 //  rpc DeleteTokens(DeleteTokensRequest) returns (DeleteTokensResponse) {}
 }
 //base
@@ -32,16 +32,14 @@ message RefreshRequest{
 //}
 
 //Response
-message GenerateTokensResponse{
-  Tokens tokens = 1;
-}
+//message GenerateTokensResponse{
+//  Tokens tokens = 1;
+//}
 message VerifyAccessResponse{
-  map<string, string> header = 1;
-  map<string, string> claims = 2;
-  string signature = 3;
+  bool user_uuid = 1;
 }
-message RefreshResponse{
-  Tokens tokens = 1;
-}
+//message RefreshResponse{
+//  Tokens tokens = 1;
+//}
 //message DeleteTokensResponse{
 //}

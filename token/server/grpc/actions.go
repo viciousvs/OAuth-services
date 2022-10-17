@@ -2,20 +2,25 @@ package grpc
 
 import (
 	"context"
-	userPb "github.com/viciousvs/OAuth-services/proto/userService"
+	tokenPb "github.com/viciousvs/OAuth-services/proto/tokenService"
 )
 
-func (s *Server) Create(ctx context.Context, request *userPb.CreateRequest) (*userPb.UUID, error) {
+func (s *Server) GenerateTokens(ctx context.Context, request *tokenPb.GenerateTokensRequest) (*tokenPb.Tokens, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (s *Server) GetByLogin(ctx context.Context, request *userPb.GetByLoginRequest) (*userPb.User, error) {
+func (s *Server) VerifyAccess(ctx context.Context, request *tokenPb.VerifyAccessRequest) (*tokenPb.VerifyAccessResponse, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (s *Server) mustEmbedUnimplementedUserServiceServer() {
+func (s *Server) Refresh(ctx context.Context, request *tokenPb.RefreshRequest) (*tokenPb.Tokens, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (s *Server) mustEmbedUnimplementedTokenServiceServer() {
 	//TODO implement me
 	panic("implement me")
 }

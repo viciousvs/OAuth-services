@@ -1,9 +1,7 @@
 package token
 
-type Token struct {
-	AtUUID      string
-	AccessToken string
-	AtExpire    int64
-
-	Rt
+type AccessToken struct {
+	access_id string
+}
+type RefreshToken struct {
 }

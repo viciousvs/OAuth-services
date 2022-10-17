@@ -4,7 +4,7 @@
 // - protoc             v3.12.4
 // source: token.proto
 
-package __
+package tokenPb
 
 import (
 	context "context"
@@ -22,9 +22,9 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TokenServiceClient interface {
-	GenerateTokens(ctx context.Context, in *GenerateTokensRequest, opts ...grpc.CallOption) (*GenerateTokensResponse, error)
+	GenerateTokens(ctx context.Context, in *GenerateTokensRequest, opts ...grpc.CallOption) (*Tokens, error)
 	VerifyAccess(ctx context.Context, in *VerifyAccessRequest, opts ...grpc.CallOption) (*VerifyAccessResponse, error)
-	Refresh(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*RefreshResponse, error)
+	Refresh(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*Tokens, error)
 }
 
 type tokenServiceClient struct {
@@ -35,8 +35,8 @@ func NewTokenServiceClient(cc grpc.ClientConnInterface) TokenServiceClient {
 	return &tokenServiceClient{cc}
 }
 
-func (c *tokenServiceClient) GenerateTokens(ctx context.Context, in *GenerateTokensRequest, opts ...grpc.CallOption) (*GenerateTokensResponse, error) {
-	out := new(GenerateTokensResponse)
+func (c *tokenServiceClient) GenerateTokens(ctx context.Context, in *GenerateTokensRequest, opts ...grpc.CallOption) (*Tokens, error) {
+	out := new(Tokens)
 	err := c.cc.Invoke(ctx, "/token.TokenService/GenerateTokens", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -53,8 +53,8 @@ func (c *tokenServiceClient) VerifyAccess(ctx context.Context, in *VerifyAccessR
 	return out, nil
 }
 
-func (c *tokenServiceClient) Refresh(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*RefreshResponse, error) {
-	out := new(RefreshResponse)
+func (c *tokenServiceClient) Refresh(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*Tokens, error) {
+	out := new(Tokens)
 	err := c.cc.Invoke(ctx, "/token.TokenService/Refresh", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -66,9 +66,9 @@ func (c *tokenServiceClient) Refresh(ctx context.Context, in *RefreshRequest, op
 // All implementations must embed UnimplementedTokenServiceServer
 // for forward compatibility
 type TokenServiceServer interface {
-	GenerateTokens(context.Context, *GenerateTokensRequest) (*GenerateTokensResponse, error)
+	GenerateTokens(context.Context, *GenerateTokensRequest) (*Tokens, error)
 	VerifyAccess(context.Context, *VerifyAccessRequest) (*VerifyAccessResponse, error)
-	Refresh(context.Context, *RefreshRequest) (*RefreshResponse, error)
+	Refresh(context.Context, *RefreshRequest) (*Tokens, error)
 	mustEmbedUnimplementedTokenServiceServer()
 }
 
@@ -76,13 +76,13 @@ type TokenServiceServer interface {
 type UnimplementedTokenServiceServer struct {
 }
 
-func (UnimplementedTokenServiceServer) GenerateTokens(context.Context, *GenerateTokensRequest) (*GenerateTokensResponse, error) {
+func (UnimplementedTokenServiceServer) GenerateTokens(context.Context, *GenerateTokensRequest) (*Tokens, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GenerateTokens not implemented")
 }
 func (UnimplementedTokenServiceServer) VerifyAccess(context.Context, *VerifyAccessRequest) (*VerifyAccessResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyAccess not implemented")
 }
-func (UnimplementedTokenServiceServer) Refresh(context.Context, *RefreshRequest) (*RefreshResponse, error) {
+func (UnimplementedTokenServiceServer) Refresh(context.Context, *RefreshRequest) (*Tokens, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Refresh not implemented")
 }
 func (UnimplementedTokenServiceServer) mustEmbedUnimplementedTokenServiceServer() {}

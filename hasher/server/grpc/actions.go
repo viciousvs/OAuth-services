@@ -16,10 +16,11 @@ func (s *Server) GenerateHash(ctx context.Context, req *hasherPb.Password) (*has
 }
 
 func (s *Server) CompareHashAndPassword(ctx context.Context, request *hasherPb.CompareRequest) (*hasherPb.CompareResponse, error) {
-	if err := compare.Handle(request); err != nil {
-		return &hasherPb.CompareResponse{Value: false}, err
+	match, err := compare.Handle(request);
+	if err != nil {
+		return nil, err
 	}
-	return &hasherPb.CompareResponse{Value: true}, nil
+	return &hasherPb.CompareResponse{Value: match}, nil
 }
 
 func (s *Server) mustEmbedUnimplementedHasherServiceServer() {

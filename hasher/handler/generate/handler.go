@@ -1,10 +1,9 @@
 package generate
 
 import (
-	"github.com/viciousvs/OAuth-services/hasher/handler"
+	"github.com/viciousvs/OAuth-services/hasher/service/argon2"
 	"github.com/viciousvs/OAuth-services/hasher/utils/customErors"
 	hasherPb "github.com/viciousvs/OAuth-services/proto/hasherService"
-	"golang.org/x/crypto/bcrypt"
 )
 
 func Handle(req *hasherPb.Password) (string, error) {
@@ -16,5 +15,5 @@ func Handle(req *hasherPb.Password) (string, error) {
 		return "", customErors.ErrInvalidData
 	}
 
-	return handler.NewBcryptHasher(bcrypt.DefaultCost).GenerateHash(password)
+	return argon2.NewArgonHasher().GenerateHash(password)
 }

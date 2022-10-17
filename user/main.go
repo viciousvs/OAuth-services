@@ -13,7 +13,7 @@ import (
 )
 
 func init() {
-	if err := godotenv.Load("hasher.env"); err != nil {
+	if err := godotenv.Load("token.env"); err != nil {
 		log.Printf("cannot load .env file=> %v", err)
 		log.Println("used default values for config")
 	}

@@ -2,9 +2,8 @@ package grpc
 
 import (
 	"fmt"
-	userPb "github.com/viciousvs/OAuth-services/proto/userService"
-	"github.com/viciousvs/OAuth-services/user/config"
-	"github.com/viciousvs/OAuth-services/user/model/user"
+	tokenPb "github.com/viciousvs/OAuth-services/proto/tokenService"
+	"github.com/viciousvs/OAuth-services/token/config"
 	"google.golang.org/grpc"
 	"log"
 	"net"
@@ -12,13 +11,12 @@ import (
 
 //Server
 type Server struct {
-	repo user.Repository
-	userPb.UnimplementedUserServiceServer
+	tokenPb.UnimplementedTokenServiceServer
 }
 
 //NewServer
-func NewServer(repo user.Repository) *Server {
-	return &Server{repo: repo}
+func NewServer() *Server {
+	return &Server{}
 }
 
 //Run
@@ -35,7 +33,7 @@ func (s *Server) Run(cfg config.ServerConfig) error {
 	}()
 
 	srv := grpc.NewServer()
-	userPb.RegisterUserServiceServer(srv, s)
+	tokenPb.RegisterTokenServiceServer(srv, s)
 	if err := srv.Serve(listener); err != nil {
 		return fmt.Errorf("cannot serve GRPC server: %w", err)
 	}

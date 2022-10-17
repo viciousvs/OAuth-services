@@ -2,10 +2,9 @@ package main
 
 import (
 	"github.com/joho/godotenv"
-	"github.com/viciousvs/OAuth-services/user/config"
-	"github.com/viciousvs/OAuth-services/user/model/user"
-	"github.com/viciousvs/OAuth-services/user/server/grpc"
-	"github.com/viciousvs/OAuth-services/user/storage/postgres"
+	"github.com/viciousvs/OAuth-services/token/config"
+	"github.com/viciousvs/OAuth-services/token/server/grpc"
+	"github.com/viciousvs/OAuth-services/token/storage/redisRepo"
 	"log"
 	"os"
 	"os/signal"
@@ -13,19 +12,18 @@ import (
 )
 
 func init() {
-	if err := godotenv.Load("hasher.env"); err != nil {
+	if err := godotenv.Load("token.env"); err != nil {
 		log.Printf("cannot load .env file=> %v", err)
 		log.Println("used default values for config")
 	}
 }
 func main() {
-	pgCfg := config.MakePostgresConfig()
-	db := postgres.NewPostgresDB(pgCfg)
-	pgRepo := user.NewPostgresRepo(db)
+	redisCfg := config.NewRedisConfig()
+	db := redisRepo.NewRedisDB(redisCfg)
 	defer db.Close()
 
 	sCfg := config.MakeServerConfig()
-	srv := grpc.NewServer(pgRepo)
+	srv := grpc.NewServer()
 
 	go func() {
 		log.Printf("GRPC server has been started, addr:%s", sCfg.Addr)
