@@ -4,7 +4,7 @@ option go_package = "./";
 
 service TokenService{
   rpc GenerateTokens(GenerateTokensRequest) returns (Tokens) {}
-  rpc VerifyAccess(VerifyAccessRequest) returns (VerifyAccessResponse) {}
+  rpc ValidateAccess(ValidateAccessRequest) returns (ValidateAccessResponse) {}
   rpc Refresh(RefreshRequest) returns (Tokens){}
 //  rpc DeleteTokens(DeleteTokensRequest) returns (DeleteTokensResponse) {}
 }
@@ -22,7 +22,7 @@ message Tokens{
 message GenerateTokensRequest{
   string uuid = 1;
 }
-message VerifyAccessRequest{
+message ValidateAccessRequest{
   string access_token = 1;
 }
 message RefreshRequest{
@@ -35,8 +35,8 @@ message RefreshRequest{
 //message GenerateTokensResponse{
 //  Tokens tokens = 1;
 //}
-message VerifyAccessResponse{
-  bool user_uuid = 1;
+message ValidateAccessResponse{
+  string user_uuid = 1;
 }
 //message RefreshResponse{
 //  Tokens tokens = 1;

@@ -3,7 +3,9 @@ package main
 import (
 	"github.com/joho/godotenv"
 	"github.com/viciousvs/OAuth-services/token/config"
+	"github.com/viciousvs/OAuth-services/token/model/token/repository"
 	"github.com/viciousvs/OAuth-services/token/server/grpc"
+	"github.com/viciousvs/OAuth-services/token/service/tokenJWT"
 	"github.com/viciousvs/OAuth-services/token/storage/redisRepo"
 	"log"
 	"os"
@@ -12,18 +14,23 @@ import (
 )
 
 func init() {
-	if err := godotenv.Load("token.env"); err != nil {
-		log.Printf("cannot load .env file=> %v", err)
+	if err := godotenv.Load("./token.env"); err != nil {
+		log.Printf("cannot load token.env file=> %v", err)
 		log.Println("used default values for config")
 	}
 }
 func main() {
 	redisCfg := config.NewRedisConfig()
 	db := redisRepo.NewRedisDB(redisCfg)
+	repo := repository.NewRedisReporitory(db)
+	jwtService, err := tokenJWT.NewJWT()
+	if err != nil {
+		log.Fatal(err)
+	}
 	defer db.Close()
 
 	sCfg := config.MakeServerConfig()
-	srv := grpc.NewServer()
+	srv := grpc.NewServer(repo, jwtService)
 
 	go func() {
 		log.Printf("GRPC server has been started, addr:%s", sCfg.Addr)

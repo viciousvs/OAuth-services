@@ -4,7 +4,7 @@
 // - protoc             v3.12.4
 // source: token.proto
 
-package tokenPb
+package __
 
 import (
 	context "context"
@@ -23,7 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TokenServiceClient interface {
 	GenerateTokens(ctx context.Context, in *GenerateTokensRequest, opts ...grpc.CallOption) (*Tokens, error)
-	VerifyAccess(ctx context.Context, in *VerifyAccessRequest, opts ...grpc.CallOption) (*VerifyAccessResponse, error)
+	ValidateAccess(ctx context.Context, in *ValidateAccessRequest, opts ...grpc.CallOption) (*ValidateAccessResponse, error)
 	Refresh(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*Tokens, error)
 }
 
@@ -44,9 +44,9 @@ func (c *tokenServiceClient) GenerateTokens(ctx context.Context, in *GenerateTok
 	return out, nil
 }
 
-func (c *tokenServiceClient) VerifyAccess(ctx context.Context, in *VerifyAccessRequest, opts ...grpc.CallOption) (*VerifyAccessResponse, error) {
-	out := new(VerifyAccessResponse)
-	err := c.cc.Invoke(ctx, "/token.TokenService/VerifyAccess", in, out, opts...)
+func (c *tokenServiceClient) ValidateAccess(ctx context.Context, in *ValidateAccessRequest, opts ...grpc.CallOption) (*ValidateAccessResponse, error) {
+	out := new(ValidateAccessResponse)
+	err := c.cc.Invoke(ctx, "/token.TokenService/ValidateAccess", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +67,7 @@ func (c *tokenServiceClient) Refresh(ctx context.Context, in *RefreshRequest, op
 // for forward compatibility
 type TokenServiceServer interface {
 	GenerateTokens(context.Context, *GenerateTokensRequest) (*Tokens, error)
-	VerifyAccess(context.Context, *VerifyAccessRequest) (*VerifyAccessResponse, error)
+	ValidateAccess(context.Context, *ValidateAccessRequest) (*ValidateAccessResponse, error)
 	Refresh(context.Context, *RefreshRequest) (*Tokens, error)
 	mustEmbedUnimplementedTokenServiceServer()
 }
@@ -79,8 +79,8 @@ type UnimplementedTokenServiceServer struct {
 func (UnimplementedTokenServiceServer) GenerateTokens(context.Context, *GenerateTokensRequest) (*Tokens, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GenerateTokens not implemented")
 }
-func (UnimplementedTokenServiceServer) VerifyAccess(context.Context, *VerifyAccessRequest) (*VerifyAccessResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method VerifyAccess not implemented")
+func (UnimplementedTokenServiceServer) ValidateAccess(context.Context, *ValidateAccessRequest) (*ValidateAccessResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ValidateAccess not implemented")
 }
 func (UnimplementedTokenServiceServer) Refresh(context.Context, *RefreshRequest) (*Tokens, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Refresh not implemented")
@@ -116,20 +116,20 @@ func _TokenService_GenerateTokens_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _TokenService_VerifyAccess_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(VerifyAccessRequest)
+func _TokenService_ValidateAccess_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ValidateAccessRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TokenServiceServer).VerifyAccess(ctx, in)
+		return srv.(TokenServiceServer).ValidateAccess(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/token.TokenService/VerifyAccess",
+		FullMethod: "/token.TokenService/ValidateAccess",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TokenServiceServer).VerifyAccess(ctx, req.(*VerifyAccessRequest))
+		return srv.(TokenServiceServer).ValidateAccess(ctx, req.(*ValidateAccessRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -164,8 +164,8 @@ var TokenService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _TokenService_GenerateTokens_Handler,
 		},
 		{
-			MethodName: "VerifyAccess",
-			Handler:    _TokenService_VerifyAccess_Handler,
+			MethodName: "ValidateAccess",
+			Handler:    _TokenService_ValidateAccess_Handler,
 		},
 		{
 			MethodName: "Refresh",

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	tokenPb "github.com/viciousvs/OAuth-services/proto/tokenService"
 	"github.com/viciousvs/OAuth-services/token/config"
+	"github.com/viciousvs/OAuth-services/token/model/token/repository"
+	"github.com/viciousvs/OAuth-services/token/model/token/service"
 	"google.golang.org/grpc"
 	"log"
 	"net"
@@ -11,12 +13,14 @@ import (
 
 //Server
 type Server struct {
+	repo    repository.Repository
+	service service.Service
 	tokenPb.UnimplementedTokenServiceServer
 }
 
 //NewServer
-func NewServer() *Server {
-	return &Server{}
+func NewServer(repo repository.Repository, service service.Service) *Server {
+	return &Server{repo: repo, service: service}
 }
 
 //Run
