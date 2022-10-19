@@ -12,8 +12,8 @@ import (
 
 func init() {
 	if err := godotenv.Load("oauth.env"); err != nil {
-		log.Printf("cannot load .env file=> %v", err)
-		log.Println("used default values for config")
+		log.Printf("cannot load oauth.env file=> %v", err)
+		log.Fatalf("used default values for config")
 	}
 }
 func main() {

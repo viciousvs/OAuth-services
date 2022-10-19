@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.12.4
-// source: hasher.proto
+// source: user.proto
 
 package __
 
@@ -25,6 +25,7 @@ type UserServiceClient interface {
 	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*UUID, error)
 	//  rpc GetUUID(GetUUIDRequest) returns (User){}
 	GetByLogin(ctx context.Context, in *GetByLoginRequest, opts ...grpc.CallOption) (*User, error)
+	GetOnlyByLogin(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*User, error)
 }
 
 type userServiceClient struct {
@@ -37,7 +38,7 @@ func NewUserServiceClient(cc grpc.ClientConnInterface) UserServiceClient {
 
 func (c *userServiceClient) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*UUID, error) {
 	out := new(UUID)
-	err := c.cc.Invoke(ctx, "/hasher.UserService/Create", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.UserService/Create", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +47,16 @@ func (c *userServiceClient) Create(ctx context.Context, in *CreateRequest, opts 
 
 func (c *userServiceClient) GetByLogin(ctx context.Context, in *GetByLoginRequest, opts ...grpc.CallOption) (*User, error) {
 	out := new(User)
-	err := c.cc.Invoke(ctx, "/hasher.UserService/GetByLogin", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.UserService/GetByLogin", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) GetOnlyByLogin(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*User, error) {
+	out := new(User)
+	err := c.cc.Invoke(ctx, "/user.UserService/GetOnlyByLogin", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -60,6 +70,7 @@ type UserServiceServer interface {
 	Create(context.Context, *CreateRequest) (*UUID, error)
 	//  rpc GetUUID(GetUUIDRequest) returns (User){}
 	GetByLogin(context.Context, *GetByLoginRequest) (*User, error)
+	GetOnlyByLogin(context.Context, *LoginRequest) (*User, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -72,6 +83,9 @@ func (UnimplementedUserServiceServer) Create(context.Context, *CreateRequest) (*
 }
 func (UnimplementedUserServiceServer) GetByLogin(context.Context, *GetByLoginRequest) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetByLogin not implemented")
+}
+func (UnimplementedUserServiceServer) GetOnlyByLogin(context.Context, *LoginRequest) (*User, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOnlyByLogin not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -96,7 +110,7 @@ func _UserService_Create_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hasher.UserService/Create",
+		FullMethod: "/user.UserService/Create",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).Create(ctx, req.(*CreateRequest))
@@ -114,10 +128,28 @@ func _UserService_GetByLogin_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hasher.UserService/GetByLogin",
+		FullMethod: "/user.UserService/GetByLogin",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).GetByLogin(ctx, req.(*GetByLoginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_GetOnlyByLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetOnlyByLogin(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.UserService/GetOnlyByLogin",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetOnlyByLogin(ctx, req.(*LoginRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -126,7 +158,7 @@ func _UserService_GetByLogin_Handler(srv interface{}, ctx context.Context, dec f
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var UserService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "hasher.UserService",
+	ServiceName: "user.UserService",
 	HandlerType: (*UserServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -137,7 +169,11 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "GetByLogin",
 			Handler:    _UserService_GetByLogin_Handler,
 		},
+		{
+			MethodName: "GetOnlyByLogin",
+			Handler:    _UserService_GetOnlyByLogin_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "hasher.proto",
+	Metadata: "user.proto",
 }

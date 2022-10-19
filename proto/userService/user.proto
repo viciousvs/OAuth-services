@@ -7,6 +7,7 @@ service UserService{
   rpc Create(CreateRequest) returns (UUID){}
 //  rpc GetUUID(GetUUIDRequest) returns (User){}
   rpc GetByLogin(GetByLoginRequest) returns (User){}
+  rpc GetOnlyByLogin(LoginRequest) returns (User){}
 //  rpc Find(FindRequest) returns (Users){}
 //  rpc CheckUser(CheckUserRequest) returns (User){}
 //  rpc GetUser(GetUserRequest) returns (GetUserResponse){}
@@ -22,7 +23,9 @@ message GetByLoginRequest{
   string login = 1;
   string password_hash = 2;
 }
-
+message LoginRequest{
+  string login = 1;
+}
 
 //responses
 message UUID{

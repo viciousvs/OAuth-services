@@ -56,3 +56,19 @@ func (r repoPostgres) GetByLogin(ctx context.Context, login, passwordHash string
 
 	return user, nil
 }
+
+func (r repoPostgres) GetOnlyByLogin(ctx context.Context, login string) (User, error) {
+	stmt := `SELECT uuid, login, password_hash FROM users WHERE (login=$1)`
+
+	var user User
+
+	err := r.db.QueryRow(ctx, stmt, login).Scan(&user.UUID, &user.Login, &user.PasswordHash)
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return user, customErors.ErrNotFound
+		}
+		return user, err
+	}
+
+	return user, nil
+}
