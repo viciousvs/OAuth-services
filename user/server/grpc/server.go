@@ -30,7 +30,7 @@ func (s *Server) Run(cfg config.ServerConfig) error {
 	defer func() {
 		err := listener.Close()
 		if err != nil {
-			log.Printf("listener close with customErors: %v", err)
+			log.Printf("listener close with customErrors: %v", err)
 		}
 	}()
 

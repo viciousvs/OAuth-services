@@ -5,22 +5,30 @@ import (
 	tokenPb "github.com/viciousvs/OAuth-services/proto/tokenService"
 	"github.com/viciousvs/OAuth-services/token/model/token"
 	"github.com/viciousvs/OAuth-services/token/model/token/repository"
-	"github.com/viciousvs/OAuth-services/token/model/token/service"
+	"github.com/viciousvs/OAuth-services/token/service/tokenJWT"
+	"github.com/viciousvs/OAuth-services/token/utils/customErrors"
+	"github.com/viciousvs/OAuth-services/token/utils/uuid"
 )
 
 type handler struct {
-	repo    repository.Repository
-	service service.Service
+	repo repository.Repository
+	jwt  tokenJWT.JWT
 }
 
-func NewHandler(repo repository.Repository, service service.Service) *handler {
-	return &handler{repo: repo, service: service}
+func NewHandler(repo repository.Repository, jwt tokenJWT.JWT) *handler {
+	return &handler{repo: repo, jwt: jwt}
 }
 
 func (h handler) Handle(ctx context.Context, request *tokenPb.GenerateTokensRequest) (*token.Tokens, error) {
+	if request == nil {
+		return nil, customErrors.ErrNilRequest
+	}
 	userUUID := request.GetUuid()
-	//TODO validation
-	tokens, err := h.service.Generate(userUUID)
+	if !uuid.IsValidUUID(userUUID) {
+		return nil, customErrors.ErrInvalidUUID
+	}
+
+	tokens, err := h.jwt.Generate(userUUID)
 	if err != nil {
 		return nil, err
 	}

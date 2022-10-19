@@ -13,24 +13,29 @@ import (
 	"syscall"
 )
 
+var jwt tokenJWT.JWT
+
 func init() {
+	var err error
 	if err := godotenv.Load("./token.env"); err != nil {
 		log.Printf("cannot load token.env file=> %v", err)
 		log.Println("used default values for config")
+	}
+
+	jwt, err = tokenJWT.NewJWT()
+	if err != nil {
+		log.Fatal(err)
 	}
 }
 func main() {
 	redisCfg := config.NewRedisConfig()
 	db := redisRepo.NewRedisDB(redisCfg)
 	repo := repository.NewRedisReporitory(db)
-	jwtService, err := tokenJWT.NewJWT()
-	if err != nil {
-		log.Fatal(err)
-	}
+
 	defer db.Close()
 
 	sCfg := config.MakeServerConfig()
-	srv := grpc.NewServer(repo, jwtService)
+	srv := grpc.NewServer(repo, jwt)
 
 	go func() {
 		log.Printf("GRPC server has been started, addr:%s", sCfg.Addr)

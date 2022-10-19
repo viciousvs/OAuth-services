@@ -5,7 +5,7 @@ import (
 	tokenPb "github.com/viciousvs/OAuth-services/proto/tokenService"
 	"github.com/viciousvs/OAuth-services/token/config"
 	"github.com/viciousvs/OAuth-services/token/model/token/repository"
-	"github.com/viciousvs/OAuth-services/token/model/token/service"
+	"github.com/viciousvs/OAuth-services/token/service/tokenJWT"
 	"google.golang.org/grpc"
 	"log"
 	"net"
@@ -13,14 +13,14 @@ import (
 
 //Server
 type Server struct {
-	repo    repository.Repository
-	service service.Service
+	repo repository.Repository
+	jwt  tokenJWT.JWT
 	tokenPb.UnimplementedTokenServiceServer
 }
 
 //NewServer
-func NewServer(repo repository.Repository, service service.Service) *Server {
-	return &Server{repo: repo, service: service}
+func NewServer(repo repository.Repository, jwt tokenJWT.JWT) *Server {
+	return &Server{repo: repo, jwt: jwt}
 }
 
 //Run
@@ -32,7 +32,7 @@ func (s *Server) Run(cfg config.ServerConfig) error {
 	defer func() {
 		err := listener.Close()
 		if err != nil {
-			log.Printf("listener close with customErors: %v", err)
+			log.Printf("listener close with customErrors: %v", err)
 		}
 	}()
 

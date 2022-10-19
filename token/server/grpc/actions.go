@@ -10,7 +10,7 @@ import (
 
 func (s *Server) GenerateTokens(ctx context.Context, request *tokenPb.GenerateTokensRequest) (*tokenPb.Tokens, error) {
 	//TODO implement me
-	h := generate.NewHandler(s.repo, s.service)
+	h := generate.NewHandler(s.repo, s.jwt)
 	tokens, err := h.Handle(ctx, request)
 	if err != nil {
 		return nil, err
@@ -20,7 +20,7 @@ func (s *Server) GenerateTokens(ctx context.Context, request *tokenPb.GenerateTo
 
 func (s *Server) ValidateAccess(ctx context.Context, request *tokenPb.ValidateAccessRequest) (*tokenPb.ValidateAccessResponse, error) {
 	//TODO implement me
-	h := validateAccess.NewHandler(s.repo, s.service)
+	h := validateAccess.NewHandler(s.repo, s.jwt)
 	uuid, err := h.Handle(ctx, request)
 	if err != nil {
 		return nil, err
@@ -30,7 +30,7 @@ func (s *Server) ValidateAccess(ctx context.Context, request *tokenPb.ValidateAc
 
 func (s *Server) Refresh(ctx context.Context, request *tokenPb.RefreshRequest) (*tokenPb.Tokens, error) {
 	//TODO implement me
-	h := refresh.NewHandler(s.repo, s.service)
+	h := refresh.NewHandler(s.repo, s.jwt)
 	tokens, err := h.Handle(ctx, request)
 	if err != nil {
 		return nil, err

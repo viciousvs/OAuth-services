@@ -1,18 +1,22 @@
 package tokenJWT
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/viciousvs/OAuth-services/token/model/token"
+	"github.com/viciousvs/OAuth-services/token/utils/customErrors"
 	"github.com/viciousvs/OAuth-services/user/utils/uuid"
 	"io/ioutil"
-	"log"
+	"strings"
 	"time"
 )
 
 const (
 	ACCESSTTL  = 30 * time.Minute    //30minute
 	REFRESHTTL = 24 * time.Hour * 30 //30days
+	ACCPREFIX  = "ACC"
+	REFPREFIX  = "REF"
 )
 
 type JWT struct {
@@ -36,6 +40,9 @@ func NewJWT() (JWT, error) {
 }
 
 func (j JWT) Generate(userUUID string) (*token.Tokens, error) {
+	if !uuid.IsValidUUID(userUUID) {
+		return nil, customErrors.ErrInvalidUUID
+	}
 	key, err := jwt.ParseRSAPrivateKeyFromPEM(j.prvKey)
 	if err != nil {
 		return nil, err
@@ -44,10 +51,10 @@ func (j JWT) Generate(userUUID string) (*token.Tokens, error) {
 	now, aID, rID := time.Now().UTC(), uuid.GenerateUUID(), uuid.GenerateUUID()
 
 	aClaims := token.AccessTokenClaims{
-		UserUUID: userUUID,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(now.Add(j.attl).UTC()),
-			ID:        aID,
+			ID:        ACCPREFIX + aID,
+			Subject:   userUUID,
 		},
 	}
 	aTokenString, err := jwt.NewWithClaims(jwt.SigningMethodRS256, aClaims).SignedString(key)
@@ -55,13 +62,14 @@ func (j JWT) Generate(userUUID string) (*token.Tokens, error) {
 		return nil, err
 	}
 
-	accessToken := token.AccessTokenModel{Id: aID, TokenString: aTokenString, Claims: aClaims}
+	accessToken := token.AccessTokenModel{TokenString: aTokenString, Claims: aClaims}
 
 	rClaims := token.RefreshTokenClaims{
-		AccessTokenClaims: aClaims,
+		AccessTokenClaims: &aClaims,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ID:        rID,
+			ID:        REFPREFIX + rID,
 			ExpiresAt: jwt.NewNumericDate(now.Add(j.rttl).UTC()),
+			Subject:   userUUID,
 		},
 	}
 	rTokenString, err := jwt.NewWithClaims(jwt.SigningMethodRS256, rClaims).SignedString(key)
@@ -70,18 +78,16 @@ func (j JWT) Generate(userUUID string) (*token.Tokens, error) {
 	}
 
 	refreshToken := token.RefreshTokenModel{
-		Id:            rID,
-		AccessTokenId: aID,
-		TokenString:   rTokenString,
-		Claims:        rClaims,
+		TokenString: rTokenString,
+		Claims:      rClaims,
 	}
 	return &token.Tokens{AccessToken: accessToken, RefreshToken: refreshToken}, nil
 }
 
-func (j JWT) ValidateAccessToken(acctoken string) (string, error) {
+func (j JWT) ValidateAccessToken(acctoken string) (string, string, error) {
 	key, err := jwt.ParseRSAPublicKeyFromPEM(j.pubKey)
 	if err != nil {
-		return "", err
+		return "", "", customErrors.ErrorWithCode500(err.Error())
 	}
 
 	tok, err := jwt.Parse(acctoken, func(t *jwt.Token) (interface{}, error) {
@@ -91,21 +97,31 @@ func (j JWT) ValidateAccessToken(acctoken string) (string, error) {
 		return key, nil
 	})
 	if err != nil {
-		return "", err
+		return "", "", customErrors.ErrorWithCode400(err.Error())
 	}
-	log.Println(tok)
-	log.Println(tok.Claims)
-	claims, ok := tok.Claims.(token.AccessTokenClaims)
+
+	accClaims, ok := tok.Claims.(jwt.MapClaims)
 	if !ok || !tok.Valid {
-		return "", fmt.Errorf("access token not valid")
+		return "", "", customErrors.ErrInvalidAccessToken
 	}
-	return claims.UserUUID, nil
+	js, err := json.Marshal(accClaims)
+	if err != nil {
+		return "", "", customErrors.ErrInvalidAccessToken
+	}
+	var aClaims token.AccessTokenClaims
+	if err := json.Unmarshal(js, &aClaims); err != nil {
+		return "", "", customErrors.ErrInvalidAccessToken
+	}
+	if !strings.HasPrefix(aClaims.ID, ACCPREFIX) {
+		return "", "", customErrors.ErrInvalidAccessToken
+	}
+	return aClaims.Subject, aClaims.ID, nil
 }
 
-func (j JWT) Refresh(refToken string) (uuid, aID string, rID string, err error) {
+func (j JWT) Refresh(refToken string) (string, string, string, error) {
 	key, err := jwt.ParseRSAPublicKeyFromPEM(j.pubKey)
 	if err != nil {
-		return "", "", "", err
+		return "", "", "", customErrors.ErrorWithCode500(err.Error())
 	}
 
 	tok, err := jwt.Parse(refToken, func(t *jwt.Token) (interface{}, error) {
@@ -115,15 +131,23 @@ func (j JWT) Refresh(refToken string) (uuid, aID string, rID string, err error) 
 		return key, nil
 	})
 	if err != nil {
-		return "", "", "", err
+		return "", "", "", customErrors.ErrorWithCode400(err.Error())
 	}
+
 	refreshClaims, ok := tok.Claims.(jwt.MapClaims)
 	if !ok || !tok.Valid {
-		return "", "", "", fmt.Errorf("refresh token not valid")
+		return "", "", "", customErrors.ErrInvalidRefreshToken
 	}
-	log.Println(ok)
-	log.Println(refreshClaims)
-
-	//return refreshClaims.AccessTokenClaims.UserUUID, refreshClaims.ID, refreshClaims.AccessTokenClaims.ID, nil
-	return "", "", "", nil
+	js, err := json.Marshal(refreshClaims)
+	if err != nil {
+		return "", "", "", customErrors.ErrInvalidRefreshToken
+	}
+	var rClaims token.RefreshTokenClaims
+	if err := json.Unmarshal(js, &rClaims); err != nil {
+		return "", "", "", customErrors.ErrInvalidRefreshToken
+	}
+	if !strings.HasPrefix(rClaims.ID, REFPREFIX) {
+		return "", "", "", customErrors.ErrInvalidRefreshToken
+	}
+	return rClaims.AccessTokenClaims.Subject, rClaims.AccessTokenClaims.ID, rClaims.ID, nil
 }
