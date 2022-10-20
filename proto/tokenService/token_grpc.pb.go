@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.12.4
-// source: token.proto
+// source: tokenService.proto
 
 package __
 
@@ -37,7 +37,7 @@ func NewTokenServiceClient(cc grpc.ClientConnInterface) TokenServiceClient {
 
 func (c *tokenServiceClient) GenerateTokens(ctx context.Context, in *GenerateTokensRequest, opts ...grpc.CallOption) (*Tokens, error) {
 	out := new(Tokens)
-	err := c.cc.Invoke(ctx, "/token.TokenService/GenerateTokens", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tokenService.TokenService/GenerateTokens", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (c *tokenServiceClient) GenerateTokens(ctx context.Context, in *GenerateTok
 
 func (c *tokenServiceClient) ValidateAccess(ctx context.Context, in *ValidateAccessRequest, opts ...grpc.CallOption) (*ValidateAccessResponse, error) {
 	out := new(ValidateAccessResponse)
-	err := c.cc.Invoke(ctx, "/token.TokenService/ValidateAccess", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tokenService.TokenService/ValidateAccess", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +55,7 @@ func (c *tokenServiceClient) ValidateAccess(ctx context.Context, in *ValidateAcc
 
 func (c *tokenServiceClient) Refresh(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*Tokens, error) {
 	out := new(Tokens)
-	err := c.cc.Invoke(ctx, "/token.TokenService/Refresh", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tokenService.TokenService/Refresh", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +108,7 @@ func _TokenService_GenerateTokens_Handler(srv interface{}, ctx context.Context, 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/token.TokenService/GenerateTokens",
+		FullMethod: "/tokenService.TokenService/GenerateTokens",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(TokenServiceServer).GenerateTokens(ctx, req.(*GenerateTokensRequest))
@@ -126,7 +126,7 @@ func _TokenService_ValidateAccess_Handler(srv interface{}, ctx context.Context, 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/token.TokenService/ValidateAccess",
+		FullMethod: "/tokenService.TokenService/ValidateAccess",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(TokenServiceServer).ValidateAccess(ctx, req.(*ValidateAccessRequest))
@@ -144,7 +144,7 @@ func _TokenService_Refresh_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/token.TokenService/Refresh",
+		FullMethod: "/tokenService.TokenService/Refresh",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(TokenServiceServer).Refresh(ctx, req.(*RefreshRequest))
@@ -156,7 +156,7 @@ func _TokenService_Refresh_Handler(srv interface{}, ctx context.Context, dec fun
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var TokenService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "token.TokenService",
+	ServiceName: "tokenService.TokenService",
 	HandlerType: (*TokenServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -173,5 +173,5 @@ var TokenService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "token.proto",
+	Metadata: "tokenService.proto",
 }

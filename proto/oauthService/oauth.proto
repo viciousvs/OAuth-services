@@ -26,11 +26,11 @@ message RefreshRequest{
 }
 //base
 message Tokens{
-  string at_uuid = 1;
+//  string at_uuid = 1;
   string access_token = 2;
   int64 at_expires = 3;
 
-  string rt_uuid = 4;
+//  string rt_uuid = 4;
   string refresh_token = 5;
   int64 rt_expires = 6;
 }

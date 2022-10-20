@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.28.0
 // 	protoc        v3.12.4
-// source: token.proto
+// source: tokenService.proto
 
 package __
 
@@ -362,19 +362,19 @@ func file_token_proto_rawDescGZIP() []byte {
 
 var file_token_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_token_proto_goTypes = []interface{}{
-	(*Tokens)(nil),                 // 0: token.Tokens
-	(*GenerateTokensRequest)(nil),  // 1: token.GenerateTokensRequest
-	(*ValidateAccessRequest)(nil),  // 2: token.ValidateAccessRequest
-	(*RefreshRequest)(nil),         // 3: token.RefreshRequest
-	(*ValidateAccessResponse)(nil), // 4: token.ValidateAccessResponse
+	(*Tokens)(nil),                 // 0: tokenService.Tokens
+	(*GenerateTokensRequest)(nil),  // 1: tokenService.GenerateTokensRequest
+	(*ValidateAccessRequest)(nil),  // 2: tokenService.ValidateAccessRequest
+	(*RefreshRequest)(nil),         // 3: tokenService.RefreshRequest
+	(*ValidateAccessResponse)(nil), // 4: tokenService.ValidateAccessResponse
 }
 var file_token_proto_depIdxs = []int32{
-	1, // 0: token.TokenService.GenerateTokens:input_type -> token.GenerateTokensRequest
-	2, // 1: token.TokenService.ValidateAccess:input_type -> token.ValidateAccessRequest
-	3, // 2: token.TokenService.Refresh:input_type -> token.RefreshRequest
-	0, // 3: token.TokenService.GenerateTokens:output_type -> token.Tokens
-	4, // 4: token.TokenService.ValidateAccess:output_type -> token.ValidateAccessResponse
-	0, // 5: token.TokenService.Refresh:output_type -> token.Tokens
+	1, // 0: tokenService.TokenService.GenerateTokens:input_type -> tokenService.GenerateTokensRequest
+	2, // 1: tokenService.TokenService.ValidateAccess:input_type -> tokenService.ValidateAccessRequest
+	3, // 2: tokenService.TokenService.Refresh:input_type -> tokenService.RefreshRequest
+	0, // 3: tokenService.TokenService.GenerateTokens:output_type -> tokenService.Tokens
+	4, // 4: tokenService.TokenService.ValidateAccess:output_type -> tokenService.ValidateAccessResponse
+	0, // 5: tokenService.TokenService.Refresh:output_type -> tokenService.Tokens
 	3, // [3:6] is the sub-list for method output_type
 	0, // [0:3] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
