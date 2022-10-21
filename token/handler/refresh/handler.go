@@ -25,11 +25,19 @@ func (h handler) Handle(ctx context.Context, request *tokenPb.RefreshRequest) (*
 		return nil, customErrors.ErrNilRequest
 	}
 	refreshToken := request.GetRefreshToken()
-	//the token is validated inside the
+	//the tokenService is validated inside the
 	userUUID, aID, rID, err := h.jwt.Refresh(refreshToken)
 	if err != nil {
 		return nil, err
 	}
+	//TODO Костыль Сперва идет проверка что рефреш существует в базе, при кейсе рефреш был удален из бд а аксес еще нет
+	if err := h.repo.TokensExists(ctx, rID); err != nil {
+		if errors.Is(err, fmt.Errorf("not found")) {
+			return nil, customErrors.ErrorWithCode409("refresh tokenService " + err.Error())
+		}
+		return nil, err
+	}
+	//Когда
 	if err := h.repo.TokensExists(ctx, aID, rID); err != nil {
 		if errors.Is(err, fmt.Errorf("not found")) {
 			return nil, err

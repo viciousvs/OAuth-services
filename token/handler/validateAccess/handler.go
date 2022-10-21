@@ -22,7 +22,7 @@ func (h handler) Handle(ctx context.Context, request *tokenPb.ValidateAccessRequ
 		return "nil", customErrors.ErrNilRequest
 	}
 	accessToken := request.GetAccessToken()
-	//the token is validated inside the
+	//the tokenService is validated inside the
 	uuid, aID, err := h.jwt.ValidateAccessToken(accessToken)
 	if err != nil {
 		return "", err

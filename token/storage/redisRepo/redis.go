@@ -21,7 +21,7 @@ func NewRedisDB(config config.RedisConfig) *RedisDB {
 		var err error
 		redisDB, err = getRedisDB(config)
 		if err != nil {
-			log.Fatalf("cannot connect to postgres db: %v", err)
+			log.Fatalf("cannot connect to redis db: %v", err)
 		}
 	})
 

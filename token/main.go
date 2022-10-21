@@ -17,7 +17,7 @@ var jwt tokenJWT.JWT
 
 func init() {
 	var err error
-	if err := godotenv.Load("./token.env"); err != nil {
+	if err := godotenv.Load("token.env"); err != nil {
 		log.Printf("cannot load token.env file=> %v", err)
 		log.Println("used default values for config")
 	}

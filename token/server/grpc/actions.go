@@ -15,7 +15,14 @@ func (s *Server) GenerateTokens(ctx context.Context, request *tokenPb.GenerateTo
 	if err != nil {
 		return nil, err
 	}
-	return &tokenPb.Tokens{AccessToken: tokens.AccessToken.TokenString, RefreshToken: tokens.RefreshToken.TokenString}, nil
+	return &tokenPb.Tokens{
+		AtUuid:       tokens.AccessToken.Claims.ID,
+		AccessToken:  tokens.AccessToken.TokenString,
+		AtExpires:    tokens.AccessToken.Claims.ExpiresAt.Unix(),
+		RtUuid:       tokens.RefreshToken.Claims.ID,
+		RefreshToken: tokens.RefreshToken.TokenString,
+		RtExpires:    tokens.RefreshToken.Claims.ExpiresAt.Unix(),
+	}, nil
 }
 
 func (s *Server) ValidateAccess(ctx context.Context, request *tokenPb.ValidateAccessRequest) (*tokenPb.ValidateAccessResponse, error) {
@@ -35,7 +42,14 @@ func (s *Server) Refresh(ctx context.Context, request *tokenPb.RefreshRequest) (
 	if err != nil {
 		return nil, err
 	}
-	return &tokenPb.Tokens{AccessToken: tokens.AccessToken.TokenString, RefreshToken: tokens.RefreshToken.TokenString}, nil
+	return &tokenPb.Tokens{
+		AtUuid:       tokens.AccessToken.Claims.ID,
+		AccessToken:  tokens.AccessToken.TokenString,
+		AtExpires:    tokens.AccessToken.Claims.ExpiresAt.Unix(),
+		RtUuid:       tokens.RefreshToken.Claims.ID,
+		RefreshToken: tokens.RefreshToken.TokenString,
+		RtExpires:    tokens.RefreshToken.Claims.ExpiresAt.Unix(),
+	}, nil
 }
 
 func (s *Server) mustEmbedUnimplementedTokenServiceServer() {

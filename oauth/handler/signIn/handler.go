@@ -2,14 +2,11 @@ package signIn
 
 import (
 	"context"
+	"github.com/viciousvs/OAuth-services/oauth/service/hasherService"
+	"github.com/viciousvs/OAuth-services/oauth/service/tokenService"
+	"github.com/viciousvs/OAuth-services/oauth/service/userService"
 	"github.com/viciousvs/OAuth-services/oauth/utils/customErrors"
-	hasherPb "github.com/viciousvs/OAuth-services/proto/hasherService"
 	oauthPb "github.com/viciousvs/OAuth-services/proto/oauthService"
-	tokenPb "github.com/viciousvs/OAuth-services/proto/tokenService"
-	userPb "github.com/viciousvs/OAuth-services/proto/userService"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
-	"os"
 )
 
 func Handle(ctx context.Context, request *oauthPb.SignInRequest) (*signInDTO, error) {
@@ -23,27 +20,17 @@ func Handle(ctx context.Context, request *oauthPb.SignInRequest) (*signInDTO, er
 	if err := uIn.validate(); err != nil {
 		return nil, customErrors.ErrInvalidData
 	}
-	uconn, err := grpc.Dial(os.Getenv("USER_SERVICE_ADDR"), grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		return nil, err
-	}
-	defer uconn.Close()
-	uclient := userPb.NewUserServiceClient(uconn)
-	u, err := uclient.GetOnlyByLogin(ctx, &userPb.LoginRequest{Login: uIn.Login})
+
+	u, err := userService.GetByLogin(ctx, uIn.Login, uIn.Password)
 	if err != nil {
 		return nil, err
 	}
 	if u == nil {
 		return nil, customErrors.ErrNilUserResponse
 	}
+
 	//////
-	hconn, err := grpc.Dial(os.Getenv("HASHER_SERVICE_ADDR"), grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		return nil, err
-	}
-	defer hconn.Close()
-	hclient := hasherPb.NewHasherServiceClient(hconn)
-	ok, err := hclient.CompareHashAndPassword(ctx, &hasherPb.CompareRequest{PasswordHash: u.GetPasswordHash(), Password: uIn.Password})
+	ok, err := hasherService.CompareHashAndService(ctx, u.GetPasswordHash(), uIn.Password)
 	if err != nil {
 		return nil, err
 	}
@@ -55,13 +42,8 @@ func Handle(ctx context.Context, request *oauthPb.SignInRequest) (*signInDTO, er
 	}
 
 	///////////
-	tconn, err := grpc.Dial(os.Getenv("token_service_addr"), grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		return nil, err
-	}
-	defer tconn.Close()
-	tclient := tokenPb.NewTokenServiceClient(tconn)
-	tokens, err := tclient.GenerateTokens(ctx, &tokenPb.GenerateTokensRequest{Uuid: u.GetUuid()})
+
+	tokens, err := tokenService.GenerateTokens(ctx, u.Uuid)
 	if err != nil {
 		return nil, err
 	}
@@ -70,13 +52,11 @@ func Handle(ctx context.Context, request *oauthPb.SignInRequest) (*signInDTO, er
 	}
 
 	return &signInDTO{
-		uuid: u.GetUuid(),
-		tokens: tokensDTO{
-			AtUuid:      tokens.GetAtUuid(),
+		UUID: u.GetUuid(),
+		Tokens: tokensDTO{
 			AccessToken: tokens.GetAccessToken(),
 			AtExpires:   tokens.GetAtExpires(),
 
-			RtUuid:       tokens.GetRtUuid(),
 			RefreshToken: tokens.GetRefreshToken(),
 			RtExpires:    tokens.GetRtExpires(),
 		},

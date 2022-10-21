@@ -11,8 +11,8 @@ import (
 )
 
 func init() {
-	if err := godotenv.Load("oauth.env"); err != nil {
-		log.Printf("cannot load .env file=> %v", err)
+	if err := godotenv.Load("hasher.env"); err != nil {
+		log.Printf("cannot load hasher.env file=> %v", err)
 		log.Println("used default values for config")
 	}
 }

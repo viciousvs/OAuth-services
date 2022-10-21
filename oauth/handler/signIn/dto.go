@@ -21,14 +21,12 @@ type userDTO struct {
 }
 
 type tokensDTO struct {
-	AtUuid       string
 	AccessToken  string
 	AtExpires    int64
-	RtUuid       string
 	RefreshToken string
 	RtExpires    int64
 }
 type signInDTO struct {
-	uuid   string
-	tokens tokensDTO
+	UUID   string
+	Tokens tokensDTO
 }

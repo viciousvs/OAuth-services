@@ -22,7 +22,7 @@ func newDTOwithUUID(login, passwordHash string) _DTO {
 func (d _DTO) validate() error {
 	return validation.ValidateStruct(&d,
 		validation.Field(&d.UUID, validation.Required),
-		validation.Field(&d.Login, validation.Required, validation.Length(5, 30)),
-		validation.Field(&d.PasswordHash, validation.Required, validation.Length(8, 30)),
+		validation.Field(&d.Login, validation.Required, validation.Length(3, 30)),
+		validation.Field(&d.PasswordHash, validation.Required, validation.Length(8, 100)),
 	)
 }

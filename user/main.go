@@ -13,8 +13,8 @@ import (
 )
 
 func init() {
-	if err := godotenv.Load("tokenJWT.env"); err != nil {
-		log.Printf("cannot load .env file=> %v", err)
+	if err := godotenv.Load("user.env"); err != nil {
+		log.Printf("cannot load user.env file=> %v", err)
 		log.Println("used default values for config")
 	}
 }

@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/joho/godotenv"
-	"github.com/viciousvs/OAuth-services/hasher/config"
-	"github.com/viciousvs/OAuth-services/hasher/server/grpc"
+	"github.com/viciousvs/OAuth-services/oauth/config"
+	"github.com/viciousvs/OAuth-services/oauth/server/grpc"
 	"log"
 	"os"
 	"os/signal"
