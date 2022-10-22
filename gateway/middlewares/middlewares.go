@@ -37,7 +37,7 @@ func (m Middleware) EnsureAuth(next http.Handler) http.Handler {
 		}
 		uuid, err := oauth.NewOAuthService(m.oAuthServiceAddr).AuthenticateAccessToken(r.Context(), headerParts[1])
 		if err != nil {
-			httpUtils.NewErrorResponse(w, http.StatusForbidden, "access token not found")
+			httpUtils.NewErrorResponse(w, http.StatusUnauthorized, "access token not found")
 			return
 		}
 
@@ -49,7 +49,7 @@ func (m Middleware) EnsureAuth(next http.Handler) http.Handler {
 	return http.HandlerFunc(fn)
 }
 
-func JsonMiddleware(handler http.HandlerFunc) http.Handler {
+func JsonMiddleware(handler http.Handler) http.Handler {
 	return contentTypeHandler(handler, "application/json")
 }
 func isContentType(h http.Header, contentType string) bool {

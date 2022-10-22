@@ -35,7 +35,7 @@ func (h handler) Handle(w http.ResponseWriter, r *http.Request) {
 
 	sup, err := oauth.NewOAuthService(h.oAuthServiceAddr).SignUp(r.Context(), inUser.Login, inUser.Password)
 	if err != nil {
-		httpUtils.NewErrorResponse(w, http.StatusConflict, err.Error())
+		httpUtils.NewErrorResponse(w, http.StatusUnauthorized, "invalid login or password")
 		return
 	}
 	resp := signUpResponse{

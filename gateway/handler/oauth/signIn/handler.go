@@ -35,7 +35,7 @@ func (h handler) Handle(w http.ResponseWriter, r *http.Request) {
 
 	sin, err := oauth.NewOAuthService(h.oAuthServiceAddr).SignIn(r.Context(), inUser.Login, inUser.Password)
 	if err != nil {
-		httpUtils.NewErrorResponse(w, http.StatusConflict, "user not found")
+		httpUtils.NewErrorResponse(w, http.StatusUnauthorized, "wrong login or password")
 		return
 	}
 	resp := signInResponse{

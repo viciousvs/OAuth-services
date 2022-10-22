@@ -2,8 +2,7 @@ package oauth
 
 import (
 	"github.com/gorilla/mux"
-	blogH "github.com/viciousvs/OAuth-services/gateway/handler/blog"
-	home "github.com/viciousvs/OAuth-services/gateway/handler/home"
+	authenticateAccess "github.com/viciousvs/OAuth-services/gateway/handler/oauth/authenticateAccessToken"
 	authenticateRefresh "github.com/viciousvs/OAuth-services/gateway/handler/oauth/authenticateRefreshToken"
 	signIn "github.com/viciousvs/OAuth-services/gateway/handler/oauth/signIn"
 	signUp "github.com/viciousvs/OAuth-services/gateway/handler/oauth/signUp"
@@ -22,21 +21,24 @@ func NewRouter(oAuthServiceAddr string) *Router {
 func (r *Router) InitRoutes() *Router {
 	router := mux.NewRouter()
 
-	router.HandleFunc("/", home.Home)
+	//middleware := middlewares.NewMiddleware(r.oAuthServiceAddr)
+	//blog := router.PathPrefix("/blog").Subrouter()
+	//blog.Use(middleware.EnsureAuth)
+	//blog.HandleFunc("", blogH.Home).Methods(http.MethodGet)
+	apiv1 := r.PathPrefix("/v1").Subrouter()
+	apiv1.Use(middlewares.JsonMiddleware)
+	oauthRouter := apiv1.PathPrefix("/oauth").Subrouter()
 
-	middleware := middlewares.NewMiddleware(r.oAuthServiceAddr)
-	blog := router.PathPrefix("/blog").Subrouter()
-	blog.Use(middleware.EnsureAuth)
-	blog.HandleFunc("/", blogH.Home).Methods(http.MethodGet)
+	oauthRouter.HandleFunc("/authentication", authenticateAccess.Handle).Methods(http.MethodPost)
 
 	rh := authenticateRefresh.NewHandler(r.oAuthServiceAddr)
-	router.Handle("/refresh", middlewares.JsonMiddleware(rh.Handle)).Methods(http.MethodPost)
+	oauthRouter.HandleFunc("/refresh", rh.Handle).Methods(http.MethodPost)
 
 	sinH := signIn.NewHandler(r.oAuthServiceAddr)
-	router.Handle("/sign-in", middlewares.JsonMiddleware(sinH.Handle)).Methods(http.MethodPost)
+	oauthRouter.HandleFunc("/sign-in", sinH.Handle).Methods(http.MethodPost)
 
 	supH := signUp.NewHandler(r.oAuthServiceAddr)
-	router.Handle("/sign-up", middlewares.JsonMiddleware(supH.Handle)).Methods(http.MethodPost)
+	oauthRouter.HandleFunc("/sign-up", supH.Handle).Methods(http.MethodPost)
 
 	return &Router{Router: router, oAuthServiceAddr: r.oAuthServiceAddr}
 }
