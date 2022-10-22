@@ -21,15 +21,15 @@ func NewRouter(oAuthServiceAddr string) *Router {
 func (r *Router) InitRoutes() *Router {
 	router := mux.NewRouter()
 
-	//middleware := middlewares.NewMiddleware(r.oAuthServiceAddr)
+	middleware := middlewares.NewMiddleware(r.oAuthServiceAddr)
 	//blog := router.PathPrefix("/blog").Subrouter()
 	//blog.Use(middleware.EnsureAuth)
 	//blog.HandleFunc("", blogH.Home).Methods(http.MethodGet)
-	apiv1 := r.PathPrefix("/v1").Subrouter()
+	apiv1 := router.PathPrefix("/v1").Subrouter()
 	apiv1.Use(middlewares.JsonMiddleware)
 	oauthRouter := apiv1.PathPrefix("/oauth").Subrouter()
 
-	oauthRouter.HandleFunc("/authentication", authenticateAccess.Handle).Methods(http.MethodPost)
+	oauthRouter.Handle("/authentication", middleware.EnsureAuth(authenticateAccess.Handle)).Methods(http.MethodGet)
 
 	rh := authenticateRefresh.NewHandler(r.oAuthServiceAddr)
 	oauthRouter.HandleFunc("/refresh", rh.Handle).Methods(http.MethodPost)

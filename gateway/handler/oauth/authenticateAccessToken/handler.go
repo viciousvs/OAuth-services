@@ -15,7 +15,6 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(200)
 	err := json.NewEncoder(w).Encode(map[string]string{"uuid": val})
 	if err != nil {
 		httpUtils.NewErrorResponse(w, http.StatusUnprocessableEntity, "unprocessable entity")

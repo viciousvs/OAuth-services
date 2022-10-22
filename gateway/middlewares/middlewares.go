@@ -17,7 +17,7 @@ type Middleware struct {
 func NewMiddleware(oAuthServiceAddr string) Middleware {
 	return Middleware{oAuthServiceAddr}
 }
-func (m Middleware) EnsureAuth(next http.Handler) http.Handler {
+func (m Middleware) EnsureAuth(next http.HandlerFunc) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		header := r.Header.Get(authorizationHeader)
 		if header == "" {
