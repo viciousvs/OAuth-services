@@ -1,5 +1,7 @@
 package authenticateRefreshToken
 
+import "strings"
+
 type refreshToken struct {
 	TokenString string `json:"refresh_token"`
 }
@@ -10,4 +12,8 @@ type tokens struct {
 
 	RefreshTokenExp int64  `json:"refresh_token_exp"`
 	RefreshToken    string `json:"refresh_token"`
+}
+
+func (t refreshToken) ValidateToken() bool {
+	return t.TokenString != "" && strings.Count(t.TokenString, ".") == 2
 }

@@ -100,7 +100,7 @@ values (3, 'blue', 46, 59.8, 81.5, 55, 10, 'metal/glass/plastic');
 
 
 insert into stuff_base (name, price, description)
-values ('Vacuum T30', 191990, 'cool hoover for home');
+values ('Vacuum T30', 191990, 'cool hoover for blog');
 insert into hoover (base_id, color, dust_collector, weight, power, material, cord_length)
 values (4, 'blue', 0.6, 1.75, 2900, 'metal/plastic', 15);
 

@@ -21,7 +21,7 @@ func (r OAuthService) SignUp(ctx context.Context, login, password string) (*sign
 	}
 	defer conn.Close()
 	client := oauthPb.NewOAuthServiceClient(conn)
-	resp, err := client.SignUp(context.Background(), &oauthPb.SignUpRequest{Login: login, Password: password})
+	resp, err := client.SignUp(ctx, &oauthPb.SignUpRequest{Login: login, Password: password})
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +44,7 @@ func (r OAuthService) SignIn(ctx context.Context, login, password string) (*sign
 	defer conn.Close()
 
 	client := oauthPb.NewOAuthServiceClient(conn)
-	resp, err := client.SignIn(context.Background(), &oauthPb.SignInRequest{Login: login, Password: password})
+	resp, err := client.SignIn(ctx, &oauthPb.SignInRequest{Login: login, Password: password})
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +69,7 @@ func (r OAuthService) AuthenticateAccessToken(ctx context.Context, accessToken s
 	defer conn.Close()
 
 	client := oauthPb.NewOAuthServiceClient(conn)
-	resp, err := client.Access(context.Background(), &oauthPb.AccessRequest{AccessToken: accessToken})
+	resp, err := client.Access(ctx, &oauthPb.AccessRequest{AccessToken: accessToken})
 	if err != nil {
 		return "", err
 	}
@@ -83,7 +83,7 @@ func (r OAuthService) AuthenticateRefreshToken(ctx context.Context, refreshToken
 	defer conn.Close()
 
 	client := oauthPb.NewOAuthServiceClient(conn)
-	resp, err := client.Refresh(context.Background(), &oauthPb.RefreshRequest{RefreshToken: refreshToken})
+	resp, err := client.Refresh(ctx, &oauthPb.RefreshRequest{RefreshToken: refreshToken})
 	if err != nil {
 		return nil, err
 	}

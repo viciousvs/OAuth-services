@@ -10,5 +10,8 @@ func NewErrorResponse(w http.ResponseWriter, statusCode int, msg string) {
 	w.Header().Set("X-Content-Type-Options", "nosniff")
 	w.WriteHeader(statusCode)
 
-	json.NewEncoder(w).Encode(map[string]string{"message": msg})
+	err := json.NewEncoder(w).Encode(map[string]string{"message": msg})
+	if err != nil {
+		return
+	}
 }

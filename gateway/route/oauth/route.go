@@ -2,7 +2,8 @@ package oauth
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/viciousvs/OAuth-services/gateway/handler/home"
+	blogH "github.com/viciousvs/OAuth-services/gateway/handler/blog"
+	home "github.com/viciousvs/OAuth-services/gateway/handler/home"
 	authenticateRefresh "github.com/viciousvs/OAuth-services/gateway/handler/oauth/authenticateRefreshToken"
 	signIn "github.com/viciousvs/OAuth-services/gateway/handler/oauth/signIn"
 	signUp "github.com/viciousvs/OAuth-services/gateway/handler/oauth/signUp"
@@ -19,19 +20,23 @@ func NewRouter(oAuthServiceAddr string) *Router {
 	return &Router{oAuthServiceAddr: oAuthServiceAddr}
 }
 func (r *Router) InitRoutes() *Router {
-	mux := mux.NewRouter()
+	router := mux.NewRouter()
+
+	router.HandleFunc("/", home.Home)
 
 	middleware := middlewares.NewMiddleware(r.oAuthServiceAddr)
-	blog := mux.PathPrefix("/blog").Subrouter()
+	blog := router.PathPrefix("/blog").Subrouter()
 	blog.Use(middleware.EnsureAuth)
-	blog.HandleFunc("/", home.Home)
+	blog.HandleFunc("/", blogH.Home).Methods(http.MethodGet)
+
 	rh := authenticateRefresh.NewHandler(r.oAuthServiceAddr)
-	mux.HandleFunc("/refresh", rh.Handle).Methods(http.MethodGet, http.MethodPost)
+	router.Handle("/refresh", middlewares.JsonMiddleware(rh.Handle)).Methods(http.MethodPost)
 
 	sinH := signIn.NewHandler(r.oAuthServiceAddr)
-	mux.HandleFunc("/sign-in", sinH.Handle).Methods(http.MethodGet, http.MethodPost)
+	router.Handle("/sign-in", middlewares.JsonMiddleware(sinH.Handle)).Methods(http.MethodPost)
 
 	supH := signUp.NewHandler(r.oAuthServiceAddr)
-	mux.HandleFunc("/sign-up", supH.Handle).Methods(http.MethodGet, http.MethodPost)
-	return &Router{Router: mux, oAuthServiceAddr: r.oAuthServiceAddr}
+	router.Handle("/sign-up", middlewares.JsonMiddleware(supH.Handle)).Methods(http.MethodPost)
+
+	return &Router{Router: router, oAuthServiceAddr: r.oAuthServiceAddr}
 }

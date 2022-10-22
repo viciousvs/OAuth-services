@@ -1,13 +1,11 @@
-package home
+package blog
 
 import (
-	"encoding/json"
+	"github.com/viciousvs/OAuth-services/gateway/utils/httpUtils"
 	"net/http"
 )
 
 func Home(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(200)
-	val := r.Context().Value("userUUID").(string)
-	_ = json.NewEncoder(w).Encode(map[string]string{"uuid": val})
+	httpUtils.NewErrorResponse(w, http.StatusNotFound, "not found")
+	return
 }

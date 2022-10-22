@@ -2,8 +2,10 @@ package authenticateRefreshToken
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/viciousvs/OAuth-services/gateway/service/grpc/oauth"
 	"github.com/viciousvs/OAuth-services/gateway/utils/httpUtils"
+	"io"
 	"net/http"
 )
 
@@ -19,13 +21,21 @@ func (h handler) Handle(w http.ResponseWriter, r *http.Request) {
 	var refToken refreshToken
 	err := json.NewDecoder(r.Body).Decode(&refToken)
 	if err != nil {
+		if errors.Is(err, io.EOF) {
+			httpUtils.NewErrorResponse(w, http.StatusBadRequest, "body couldn't be empty")
+			return
+		}
 		httpUtils.NewErrorResponse(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	if !refToken.ValidateToken() {
+		httpUtils.NewErrorResponse(w, http.StatusBadRequest, "invalid refresh token")
 		return
 	}
 
 	tok, err := oauth.NewOAuthService(h.oAuthServiceAddr).AuthenticateRefreshToken(r.Context(), refToken.TokenString)
 	if err != nil {
-		httpUtils.NewErrorResponse(w, http.StatusForbidden, err.Error())
+		httpUtils.NewErrorResponse(w, http.StatusUnauthorized, "refresh token doesn't exist or not valid")
 		return
 	}
 	resp := tokens{
@@ -36,7 +46,7 @@ func (h handler) Handle(w http.ResponseWriter, r *http.Request) {
 	}
 	b, err := json.Marshal(resp)
 	if err != nil {
-		httpUtils.NewErrorResponse(w, http.StatusBadRequest, err.Error())
+		httpUtils.NewErrorResponse(w, http.StatusUnprocessableEntity, err.Error())
 		return
 	}
 

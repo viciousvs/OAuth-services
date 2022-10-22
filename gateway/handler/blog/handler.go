@@ -1,4 +1,4 @@
-package authenticateAccessToken
+package blog
 
 import (
 	"encoding/json"
@@ -6,16 +6,15 @@ import (
 	"net/http"
 )
 
-func Handle(w http.ResponseWriter, r *http.Request) {
+func Home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
 	val, ok := r.Context().Value("userUUID").(string)
 	if !ok {
-		httpUtils.NewErrorResponse(w, http.StatusUnauthorized, "unprocessable entity")
+		httpUtils.NewErrorResponse(w, http.StatusUnprocessableEntity, "unprocessable entity")
 		return
 	}
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(200)
 	err := json.NewEncoder(w).Encode(map[string]string{"uuid": val})
 	if err != nil {
 		httpUtils.NewErrorResponse(w, http.StatusUnprocessableEntity, "unprocessable entity")
