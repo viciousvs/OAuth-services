@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  gateway:
+    build: ./
+    command:
+      - ./gateway-server
+    ports:
+      - '8081:8081'
+    depends_on:
+      - db
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=user_service
+  db:
+    restart: always
+    image: postgres:latest
+    volumes:
+      - ./.database/postgres/data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=qwerty
+    ports:
+      - '5432:5432'
+  cache:
+    restart: always
+    image: redis:6.2-alpine
+    volumes:
+      - cache:/data
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning

@@ -25,7 +25,7 @@ type ServerConfig struct {
 func NewConfig() *Config {
 	return &Config{
 		ServerConfig: ServerConfig{
-			Addr:           getEnv("SERVER_ADDRESS", "localhost:8081"),
+			Addr:           getEnv("SERVER_ADDRESS", ":8081"),
 			MaxHeaderbytes: 1 << 20,
 			ReadTimeout:    10 * time.Second,
 			WriteTimeout:   10 * time.Second,

@@ -1,6 +1,7 @@
 package oauth
 
 import (
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	authenticateAccess "github.com/viciousvs/OAuth-services/gateway/handler/oauth/authenticateAccessToken"
 	authenticateRefresh "github.com/viciousvs/OAuth-services/gateway/handler/oauth/authenticateRefreshToken"
@@ -8,6 +9,7 @@ import (
 	signUp "github.com/viciousvs/OAuth-services/gateway/handler/oauth/signUp"
 	"github.com/viciousvs/OAuth-services/gateway/middlewares"
 	"net/http"
+	"os"
 )
 
 type Router struct {
@@ -20,6 +22,7 @@ func NewRouter(oAuthServiceAddr string) *Router {
 }
 func (r *Router) InitRoutes() *Router {
 	router := mux.NewRouter()
+	router.Use(func(next http.Handler) http.Handler { return handlers.LoggingHandler(os.Stdout, next) })
 
 	middleware := middlewares.NewMiddleware(r.oAuthServiceAddr)
 	//blog := router.PathPrefix("/blog").Subrouter()
